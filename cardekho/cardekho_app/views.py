@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from .api_list.serializers import carSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework import status
 
 
 
@@ -36,15 +37,37 @@ from rest_framework.decorators import api_view
 
 
 
-@api_view()
+@api_view(['GET', 'POST' ])
 def car_list_view(request):
-    car = carList.objects.all()
-    serializer=carSerializer(car, many=True)
-    return Response(serializer.data)
-
-
-@api_view()
+    if request.method == 'GET':
+        car = carList.objects.all()
+        serializer=carSerializer(car, many=True)
+        return Response(serializer.data)
+    if request.method == 'POST':
+        serializer=carSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+    
+@api_view(['GET', 'PUT','DELETE'])
 def car_detail_view(request,pk):
-    car = carList.objects.get(pk=pk)
-    serializer=carSerializer(car)
-    return Response(serializer.data)
+    if request.method == 'GET':
+        try:
+            car = carList.objects.get(pk=pk)
+        except carList.DoesNotExist:
+            return Response({"Error : car not found "},status=404)    
+        serializer=carSerializer(car)
+        return Response(serializer.data)
+    if request.method == 'PUT':
+        car = carList.objects.get(pk=pk)
+        serializer=carSerializer(car, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=202)
+        return Response(serializer.errors, status=400)
+    
+    if request.method == 'DELETE':
+        car = carList.objects.get(pk=pk)
+        car.delete()
+        return Response(status=204)
