@@ -65,6 +65,7 @@ class carSerializer(serializers.ModelSerializer):
 
 
 class showroomSerializer(serializers.ModelSerializer):
+    showrooms = carSerializer(many=True, read_only=True)
     class Meta:
         model = showroomList
         fields = "__all__"
