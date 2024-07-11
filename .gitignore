@@ -9,6 +9,13 @@ media
 # Backup files # 
 *.bak 
 
+
+
+# Ignore Django migration files
+*/migrations/
+
+
+
 # If you are using PyCharm # 
 # User-specific stuff
 .idea/**/workspace.xml

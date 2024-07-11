@@ -8,6 +8,9 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 
+from rest_framework.authentication import BasicAuthentication
+from rest_framework.permissions import IsAuthenticated,IsAdminUser
+
 
 
 # Create your views here.
@@ -73,7 +76,12 @@ def car_detail_view(request,pk):
         return Response(status=204)
     
 
+from django.contrib.auth import logout
+from django.shortcuts import redirect
 
+def logout_user(request):
+    logout(request)
+    return redirect('list') 
 
 
 
@@ -81,6 +89,11 @@ from rest_framework.views import APIView
 
 
 class showroom_list_view(APIView):
+    # if we want same authentication system and permissions for all functions then we do not wwant to declare it in every view instead of this we can declare one time in settings.py 
+    
+    # authentication_classes = [BasicAuthentication]
+    # permission_classes = [IsAdminUser]
+
     def get(self, request):
         showroom = showroomList.objects.all()
         serializer=showroomSerializer(showroom, many=True)
