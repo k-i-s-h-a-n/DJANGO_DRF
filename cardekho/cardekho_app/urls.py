@@ -10,6 +10,7 @@ urlpatterns = [
     path('list/<int:pk>', car_detail_view, name='detail'),
     path('showroom', showroom_list_view.as_view(), name='showroomView'),    
     path('showroom/<int:pk>', showroom_details.as_view(), name='showroomDetails'),
+    path('logout/', logout_user, name='logout'),
 
 ]
 
